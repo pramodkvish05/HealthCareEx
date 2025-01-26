@@ -20,61 +20,45 @@ import in.nareshit.raghu.service.ISpecializationService;
 @Controller
 @RequestMapping("/doctor")
 public class DoctorController {
-	
+
 	@Autowired
 	private IDoctorService service;
-	
+
 	@Autowired
 	private ISpecializationService specializationService;
-	
+
 	private void createDyanamicUi(Model model) {
 		model.addAttribute("specializations", specializationService.getSpecIdAndName());
 	}
 
-	//1. show Register page
+	// 1. show Register page
 	@GetMapping("/register")
-	public String showReg(
-			@RequestParam(value = "message",required = false)String message,
-			Model model
-			) 
-	{
+	public String showReg(@RequestParam(value = "message", required = false) String message, Model model) {
 		model.addAttribute("message", message);
 		createDyanamicUi(model);
 		return "DoctorRegister";
 	}
-	
-	//2. save on submit
+
+	// 2. save on submit
 	@PostMapping("/save")
-	public String save(
-			@ModelAttribute Doctor doctor,
-			RedirectAttributes attributes
-			)
-	{
+	public String save(@ModelAttribute Doctor doctor, RedirectAttributes attributes) {
 		Long id = service.saveDoctor(doctor);
-		attributes.addAttribute("message", "Doctor ("+id+") is created");
+		attributes.addAttribute("message", "Doctor (" + id + ") is created");
 		return "redirect:register";
 	}
-	
-	//3. display data
+
+	// 3. display data
 	@GetMapping("/all")
-	public String display(
-			@RequestParam(value = "message",required = false)String message,
-			Model model
-			) 
-	{
-		List<Doctor>  list = service.getAllDoctors();
+	public String display(@RequestParam(value = "message", required = false) String message, Model model) {
+		List<Doctor> list = service.getAllDoctors();
 		model.addAttribute("list", list);
 		model.addAttribute("message", message);
 		return "DoctorData";
 	}
-	
-	//4. delete by id
+
+	// 4. delete by id
 	@GetMapping("/delete")
-	public String delete(
-			@RequestParam("id")Long id,
-			RedirectAttributes attributes
-			)
-	{
+	public String delete(@RequestParam("id") Long id, RedirectAttributes attributes) {
 		String message = null;
 		try {
 			service.removeDoctor(id);
@@ -86,15 +70,10 @@ public class DoctorController {
 		attributes.addAttribute("message", message);
 		return "redirect:all";
 	}
-	
-	//5. show edit
+
+	// 5. show edit
 	@GetMapping("/edit")
-	public String edit(
-			@RequestParam("id")Long id,
-			Model model,
-			RedirectAttributes attributes
-			)
-	{
+	public String edit(@RequestParam("id") Long id, Model model, RedirectAttributes attributes) {
 		String page = null;
 		try {
 			Doctor doc = service.getOneDoctor(id);
@@ -108,22 +87,17 @@ public class DoctorController {
 		}
 		return page;
 	}
-	
-	
-	//6. do update
+
+	// 6. do update
 	@PostMapping("/update")
-	public String doUpdate(
-			@ModelAttribute Doctor doctor,
-			RedirectAttributes attributes
-			) 
-	{
+	public String doUpdate(@ModelAttribute Doctor doctor, RedirectAttributes attributes) {
 		service.updateDoctor(doctor);
-		attributes.addAttribute("message", doctor.getId()+", updated!");
+		attributes.addAttribute("message", doctor.getId() + ", updated!");
 		return "redirect:all";
 	}
-	
-	//7. email and mobile duplicate validations (AJAX)
-	
-	//8. excel export
-	
+
+	// 7. email and mobile duplicate validations (AJAX)
+
+	// 8. excel export
+
 }
